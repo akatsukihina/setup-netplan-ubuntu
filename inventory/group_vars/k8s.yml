@@ -1,0 +1,7 @@
+netplan_interfaces:
+  eth0:
+    address: "{{ ansible_host }}/24"
+    route_cidrs: "{{ default_routes }}"
+    via: 10.211.108.254
+  eth1:
+    address: "{{ ip_public }}/24"
