@@ -1,0 +1,52 @@
+---
+- name: Gather network facts
+  setup:
+    gather_subset:
+      - network
+
+- name: Ensure default gateway interface exists
+  fail:
+    msg: "Interface {{ netplan_default_gateway_iface }} does not exist on host {{ inventory_hostname }}"
+  when: netplan_default_gateway_iface not in ansible_facts.interfaces
+
+- name: Ensure ip_public is defined when eth1 is configured
+  fail:
+    msg: "ip_public is not defined for host {{ inventory_hostname }}"
+  when:
+    - netplan_interfaces.eth1 is defined
+    - ip_public is not defined
+
+- name: Initialize rendered netplan interfaces
+  set_fact:
+    netplan_interfaces_rendered: "{{ netplan_interfaces }}"
+
+- name: Build static routes per interface
+  set_fact:
+    netplan_interfaces_rendered: >-
+      {{
+        netplan_interfaces_rendered
+        | combine({
+            item.key: item.value
+            | combine({
+                'routes': (
+                  item.value.route_cidrs
+                  | reject('equalto', '0.0.0.0/0')
+                  | map('community.general.dict_kv', 'to')
+                  | map('combine', {'via': item.value.via})
+                  | list
+                )
+              })
+          }, recursive=True)
+      }}
+  loop: "{{ netplan_interfaces | dict2items }}"
+  when:
+    - item.value.route_cidrs is defined
+    - item.value.via is defined
+
+- name: Generate netplan config
+  template:
+    src: netplan.yaml.j2
+    dest: "{{ netplan_output_file }}"
+    owner: root
+    group: root
+    mode: '0644'
