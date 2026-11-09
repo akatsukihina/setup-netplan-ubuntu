@@ -1,0 +1,19 @@
+network:
+  ethernets:
+{% for iface, cfg in netplan_interfaces_rendered.items() %}
+    {{ iface }}:
+      dhcp4: no
+      addresses:
+        - {{ cfg.address }}
+{% if iface == netplan_default_gateway_iface %}
+      gateway4: {{ netplan_default_gateway_ip }}
+{% endif %}
+{% if cfg.routes is defined and cfg.routes | length > 0 %}
+      routes:
+{% for r in cfg.routes %}
+        - to: {{ r.to }}
+          via: {{ r.via }}
+{% endfor %}
+{% endif %}
+{% endfor %}
+  version: 2
