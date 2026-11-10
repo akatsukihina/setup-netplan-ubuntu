@@ -4,10 +4,10 @@ pipeline {
     }
 
     environment {
-        REGISTRY        = 'registry-lab.tivi360.vn'
+        REGISTRY        = 'registry-lab.akatsukihina.com.vn'
         IMAGE_NAME      = 'ansible/network-setup'
         IMAGE_TAG       = "${BUILD_NUMBER}"
-        GIT_REPO        = 'https://gitlab.tivi360.vn/semaphore/network-setup.git'
+        GIT_REPO        = 'https://gitlab.akatsukihina.com.vn/ansible/network-setup.git'
         GIT_CREDENTIAL  = 'gitlab-auto'
         REG_CREDENTIAL  = 'registry'
     }
