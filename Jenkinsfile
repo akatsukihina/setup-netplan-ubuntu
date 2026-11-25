@@ -7,7 +7,7 @@ pipeline {
         REGISTRY        = 'registry-lab.akatsukihina.com.vn'
         IMAGE_NAME      = 'ansible/network-setup'
         IMAGE_TAG       = "${BUILD_NUMBER}"
-        GIT_REPO        = 'https://gitlab.akatsukihina.com.vn/ansible/network-setup.git'
+        GIT_REPO        = 'https://github.com/akatsukihina/setup-netplan-ubuntu.git'
         GIT_CREDENTIAL  = 'gitlab-auto'
         REG_CREDENTIAL  = 'registry'
     }
