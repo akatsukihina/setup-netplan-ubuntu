@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        label 'agent-build'
+        label 'akatsukihina'
     }
 
     environment {
